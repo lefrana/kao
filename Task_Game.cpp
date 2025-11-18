@@ -4,6 +4,7 @@
 #include  "MyPG.h"
 #include  "Task_Game.h"
 #include  "Task_Ending.h"
+#include  "Task_Object.h"
 
 namespace  Game
 {
@@ -30,10 +31,12 @@ namespace  Game
 		this->res = Resource::Create();
 
 		//★データ初期化
-		
+		srand((unsigned int)time(NULL));
+
 		//★タスクの生成
 
-		//create player
+		//Object Initialize
+		auto obj = Object00::Object::Create(true);
 
 		return  true;
 	}
@@ -43,8 +46,7 @@ namespace  Game
 	{
 		//★データ＆タスク解放
 		ge->KillAll_G("本編");
-		ge->KillAll_G("フィールド");
-		ge->KillAll_G("プレイヤ");
+		ge->KillAll_G("Object00");
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成

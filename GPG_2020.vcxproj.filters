@@ -85,6 +85,9 @@
     <ClCompile Include="Task_Title.cpp">
       <Filter>MyPG\Task</Filter>
     </ClCompile>
+    <ClCompile Include="Task_Object.cpp">
+      <Filter>MyPG\Task</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -142,6 +145,9 @@
       <Filter>MyPG\Task</Filter>
     </ClInclude>
     <ClInclude Include="Task_Title.h">
+      <Filter>MyPG\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Object.h">
       <Filter>MyPG\Task</Filter>
     </ClInclude>
   </ItemGroup>
