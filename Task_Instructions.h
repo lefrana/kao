@@ -1,14 +1,14 @@
 #pragma warning(disable:4996)
 #pragma once
 //-------------------------------------------------------------------
-//Object00
+//Instructions
 //-------------------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
 
-namespace  Object00
+namespace  Instructions
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("Object00");	//グループ名
+	const  string  defGroupName("Instructions");	//グループ名
 	const  string  defName("NoName");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
@@ -24,7 +24,6 @@ namespace  Object00
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
 		DG::Image::SP	img;
-		DG::Image::SP	imgBody;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -48,28 +47,6 @@ namespace  Object00
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		//ML::Point		pos;
-		//ML::Box2D		hitBase;
-		int				logoPosX;
-
-		XI::GamePad::SP	controller;
-
-		//bool	isMovingDown;
-		//bool	isStopping;
-
-		enum class State { Normal, Move, Stop };
-
-		struct FacePart 
-		{
-			State			state;
-			ML::Point		pos;
-			bool			isMovingDown;
-		};
-
-		FacePart lefteye, righteye, nose, mouth;
-
-		void  FacePart_Initialize(FacePart& p_, int x_);
-		void  FacePart_UpDate(FacePart& p_);
-		void  FacePart_Draw(FacePart& p_, int sx_, int sw_, int w_);
+		float fade;
 	};
 }

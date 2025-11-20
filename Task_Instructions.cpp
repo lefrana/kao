@@ -1,25 +1,25 @@
 //-------------------------------------------------------------------
-//Object
+//Istructions
 //-------------------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_Object.h"
+#include  "Task_Instructions.h"
+#include  "Task_Game.h"
 
-namespace  Object00
+namespace  Instructions
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->img = DG::Image::Create("./data/image/kao_faceparts.png");
-		this->imgBody = DG::Image::Create("./data/image/kao_body.png");
+		this->img = DG::Image::Create("./data/image/kao_body.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
-		//this->img.reset();
+		this->img.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -32,23 +32,8 @@ namespace  Object00
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->logoPosX = 480;
-
-		this->render2D_Priority[1] = 0.5f;
-		this->controller = ge->in1;
-		/*this->pos.x = 0;
-		this->pos.y = 0;
-
-		this->isMovingDown = true;
-		this->isStopping = false;*/
-
-		FacePart_Initialize(this->lefteye, 190);
-		FacePart_Initialize(this->righteye,260);
-		FacePart_Initialize(this->mouth, 240 - 32);
-		FacePart_Initialize(this->nose, 240 - 16);
+		this->fade = 0;
 		
-
-
 		//★タスクの生成
 
 		return  true;
@@ -60,8 +45,10 @@ namespace  Object00
 		//★データ＆タスク解放
 
 
-		if (!ge->QuitFlag() && this->nextTaskCreate) {
+		if (!ge->QuitFlag() && this->nextTaskCreate) 
+		{
 			//★引き継ぎタスクの生成
+			auto  nextTask = Game::Object::Create(true);
 		}
 
 		return  true;
@@ -70,102 +57,27 @@ namespace  Object00
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		this->logoPosX -= 5;
-		if (this->logoPosX <= 0) 
-		{
-			this->logoPosX = 0;
-		}
+		auto inp = ge->in1->GetState();
 
-		if (logoPosX == 0)
-		{ 
-			if (this->lefteye.state != State::Stop)
-			{
-				FacePart_UpDate(this->lefteye);
-			}
-			else if (this->righteye.state != State::Stop)
-			{
-				FacePart_UpDate(this->righteye);
-			}
-			else if (this->nose.state != State::Stop)
-			{
-				FacePart_UpDate(this->nose);
-			}
-			else if (this->mouth.state != State::Stop)
-			{
-				FacePart_UpDate(this->mouth);
-			}
+		fade += 0.005f;
+		if (fade > 1.0f) fade = 1.0f;
+
+		if (inp.ST.down) {
+			//自身に消滅要請
+			this->Kill();
 		}
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		ML::Box2D	draw(480/3, 270/4, 160, 256);
-		ML::Box2D	src(0, 0, 160, 256);
-		draw.Offset(this->logoPosX, 0);
-		this->res->imgBody->Draw(draw, src);
+		ML::Box2D draw(50, 10, 160, 256);
+		ML::Box2D src(0, 0, 160, 256);
 
-		FacePart_Draw(this->lefteye, 32 * 0, 32, 0);
-		FacePart_Draw(this->righteye, 32 * 0, 32, 0);
-		FacePart_Draw(this->mouth, 32 * 2, 64, 32);
-		FacePart_Draw(this->nose, 32 * 1, 32, 0);
+		ML::Color col(fade, 1.0f, 1.0f, 1.0);
+		this->res->img->Draw(draw, src, col);
 	}
-	//-------------------------------------------------------------------
-	void  Object::FacePart_Initialize(FacePart& p_, int x_)
-	{
-		p_.state = State::Normal;
-		p_.pos.x = x_;
-		p_.pos.y = -100;
-		p_.isMovingDown = true;
-	}
-	//-------------------------------------------------------------------
-	void  Object::FacePart_UpDate(FacePart& p_)
-	{
-		if (p_.state == State::Normal)
-		{
-			p_.pos.y = rand()%(270 - 32);
-			p_.state = State::Move;
-		}
 
-		if (p_.state == State::Move)
-		{
-			if (p_.isMovingDown)
-			{
-				p_.pos.y += 3;
-				if (p_.pos.y >= 270 - 32)
-				{
-					p_.isMovingDown = false;
-				}
-			}
-			else
-			{
-				p_.pos.y -= 3;
-				if (p_.pos.y <= 0)
-				{
-					p_.pos.y = 0;
-					p_.isMovingDown = true;
-				}
-			}
-		}
-
-		if (this->controller)
-		{
-			auto inp = this->controller->GetState();
-			if (inp.B1.down)
-			{
-				p_.state = State::Stop;
-			}
-		}
-	}
-	//-------------------------------------------------------------------
-	void  Object::FacePart_Draw(FacePart& p_, int sx_, int sw_, int w_)
-	{
-		ML::Box2D	draw(0, 0, 32 + w_, 32);
-		draw.Offset(p_.pos);
-
-		ML::Box2D	src(sx_, 0, sw_, 32);
-		this->res->img->Draw(draw, src);
-	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
