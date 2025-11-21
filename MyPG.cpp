@@ -1,5 +1,6 @@
-﻿#include "MyPG.h"
+﻿#include  "MyPG.h"
 #include  "Task_Title.h"
+#include  "sound.h"
 
 namespace MyPG
 {
@@ -47,7 +48,10 @@ namespace MyPG
 		}
 		//	サウンドライブラリの初期化
 		{
-			this->dmi = DM::Obj::Create(wnd_);
+			bgm::Init();
+			se::Init(wnd_);
+
+			//this->dmi = DM::Obj::Create(wnd_);
 			if (!this->dmi) {
 				//	環境の初期化に失敗
 				//DestroyWindow(wnd_);
@@ -113,6 +117,8 @@ namespace MyPG
 	}
 	MyGameEngine::~MyGameEngine()
 	{
+		bgm::Del();
+		se::Del();
 	}
 	//ゲームエンジンに追加したもののステップ処理
 	void MyGameEngine::UpDate()
@@ -123,6 +129,8 @@ namespace MyPG
 		if (this->dmi) {
 			this->dmi->UpDate();
 		}
+		bgm::EndCheck();
+		se::EndCheck();
 	}
 
 	//2D描画環境のデフォルトパラメータ設定

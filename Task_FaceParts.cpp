@@ -1,10 +1,11 @@
 //-------------------------------------------------------------------
-//Object
+//Face Parts
 //-------------------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_Object.h"
+#include  "Task_FaceParts.h"
+#include  "sound.h"
 
-namespace  Object00
+namespace  FaceParts
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
@@ -36,6 +37,8 @@ namespace  Object00
 
 		this->render2D_Priority[1] = 0.5f;
 		this->controller = ge->in1;
+
+		se::LoadFile("click", "./data/sound/se/click.wav");
 		/*this->pos.x = 0;
 		this->pos.y = 0;
 
@@ -70,7 +73,7 @@ namespace  Object00
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		this->logoPosX -= 5;
+		this->logoPosX -= 3;
 		if (this->logoPosX <= 0) 
 		{
 			this->logoPosX = 0;
@@ -154,8 +157,18 @@ namespace  Object00
 			if (inp.B1.down)
 			{
 				p_.state = State::Stop;
+				se::Play("click");
 			}
 		}
+	}
+	//-------------------------------------------------------------------
+	bool Object::IsAllStopped()
+	{
+		return
+			this->lefteye.state		== State::Stop &&
+			this->righteye.state	== State::Stop &&
+			this->nose.state		== State::Stop &&
+			this->mouth.state		== State::Stop;
 	}
 	//-------------------------------------------------------------------
 	void  Object::FacePart_Draw(FacePart& p_, int sx_, int sw_, int w_)

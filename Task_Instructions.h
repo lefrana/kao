@@ -23,7 +23,8 @@ namespace  Instructions
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-		DG::Image::SP	img;
+		DG::Image::SP	imgCat;
+		DG::Image::SP	imgText;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -47,6 +48,10 @@ namespace  Instructions
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		float fade;
+		float	fade;
+		int		time;
+		int		textAnim;
+
+		bool	speechPlayed;
 	};
 }

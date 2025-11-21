@@ -1,14 +1,14 @@
 #pragma warning(disable:4996)
 #pragma once
 //-------------------------------------------------------------------
-//Object00
+//Face Parts
 //-------------------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
 
-namespace  Object00
+namespace  FaceParts
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("Object00");	//グループ名
+	const  string  defGroupName("FaceParts");	//グループ名
 	const  string  defName("NoName");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
@@ -71,5 +71,7 @@ namespace  Object00
 		void  FacePart_Initialize(FacePart& p_, int x_);
 		void  FacePart_UpDate(FacePart& p_);
 		void  FacePart_Draw(FacePart& p_, int sx_, int sw_, int w_);
+
+		bool  IsAllStopped();
 	};
 }

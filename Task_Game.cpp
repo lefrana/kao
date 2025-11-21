@@ -4,7 +4,7 @@
 #include  "MyPG.h"
 #include  "Task_Game.h"
 #include  "Task_Ending.h"
-#include  "Task_Object.h"
+#include  "Task_FaceParts.h"
 
 namespace  Game
 {
@@ -32,11 +32,12 @@ namespace  Game
 
 		//★データ初期化
 		srand((unsigned int)time(NULL));
+		kill = false;
 
 		//★タスクの生成
 
 		//Object Initialize
-		auto obj = Object00::Object::Create(true);
+		auto obj = FaceParts::Object::Create(true);
 
 		return  true;
 	}
@@ -46,7 +47,8 @@ namespace  Game
 	{
 		//★データ＆タスク解放
 		ge->KillAll_G("本編");
-		ge->KillAll_G("Object00");
+		ge->KillAll_G("FaceParts");
+		kill = true;
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
@@ -59,8 +61,10 @@ namespace  Game
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		//if(obj->)
 		auto inp = ge->in1->GetState( );
-		if (inp.ST.down) {
+		if (inp.ST.down&&kill) 
+		{
 			//自身に消滅要請
 			this->Kill();
 		}

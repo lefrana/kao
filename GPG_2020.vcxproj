@@ -135,10 +135,11 @@
     <ClCompile Include="GameEngine_Ver3_83.cpp" />
     <ClCompile Include="myLib.cpp" />
     <ClCompile Include="MyPG.cpp" />
+    <ClCompile Include="sound.cpp" />
     <ClCompile Include="Task_Ending.cpp" />
+    <ClCompile Include="Task_FaceParts.cpp" />
     <ClCompile Include="Task_Game.cpp" />
     <ClCompile Include="Task_Instructions.cpp" />
-    <ClCompile Include="Task_Object.cpp" />
     <ClCompile Include="Task_Title.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="XI2018_Ver1_0.cpp" />
@@ -159,10 +160,11 @@
     <ClInclude Include="GameEngine_Ver3_83.h" />
     <ClInclude Include="myLib.h" />
     <ClInclude Include="MyPG.h" />
+    <ClInclude Include="sound.h" />
     <ClInclude Include="Task_Ending.h" />
+    <ClInclude Include="Task_FaceParts.h" />
     <ClInclude Include="Task_Game.h" />
     <ClInclude Include="Task_Instructions.h" />
-    <ClInclude Include="Task_Object.h" />
     <ClInclude Include="Task_Title.h" />
     <ClInclude Include="XI2018_Ver1_0.h" />
   </ItemGroup>

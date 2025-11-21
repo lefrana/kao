@@ -85,10 +85,13 @@
     <ClCompile Include="Task_Title.cpp">
       <Filter>MyPG\Task</Filter>
     </ClCompile>
-    <ClCompile Include="Task_Object.cpp">
+    <ClCompile Include="Task_Instructions.cpp">
       <Filter>MyPG\Task</Filter>
     </ClCompile>
-    <ClCompile Include="Task_Instructions.cpp">
+    <ClCompile Include="Task_FaceParts.cpp">
+      <Filter>MyPG\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
       <Filter>MyPG\Task</Filter>
     </ClCompile>
   </ItemGroup>
@@ -150,10 +153,13 @@
     <ClInclude Include="Task_Title.h">
       <Filter>MyPG\Task</Filter>
     </ClInclude>
-    <ClInclude Include="Task_Object.h">
+    <ClInclude Include="Task_Instructions.h">
       <Filter>MyPG\Task</Filter>
     </ClInclude>
-    <ClInclude Include="Task_Instructions.h">
+    <ClInclude Include="Task_FaceParts.h">
+      <Filter>MyPG\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
       <Filter>MyPG\Task</Filter>
     </ClInclude>
   </ItemGroup>

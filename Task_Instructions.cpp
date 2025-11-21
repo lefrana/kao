@@ -4,6 +4,8 @@
 #include  "MyPG.h"
 #include  "Task_Instructions.h"
 #include  "Task_Game.h"
+#include  "sound.h"
+
 
 namespace  Instructions
 {
@@ -12,14 +14,18 @@ namespace  Instructions
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->img = DG::Image::Create("./data/image/kao_body.png");
+		this->imgCat = DG::Image::Create("./data/image/kao_body.png");
+		this->imgText = DG::Image::Create("./data/image/instruction_text.png");
+
+
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
-		this->img.reset();
+		this->imgCat.reset();
+		this->imgText.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -32,8 +38,13 @@ namespace  Instructions
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->fade = 0;
-		
+		this->fade = 0.f;
+		this->time = 0;
+		this->textAnim = 0;
+
+		se::LoadFile("speech", "./data/sound/se/speech.wav");
+		this->speechPlayed = false;
+	
 		//★タスクの生成
 
 		return  true;
@@ -59,23 +70,56 @@ namespace  Instructions
 	{
 		auto inp = ge->in1->GetState();
 
-		fade += 0.005f;
-		if (fade > 1.0f) fade = 1.0f;
+		this->time++;
 
-		if (inp.ST.down) {
-			//自身に消滅要請
-			this->Kill();
+		//cat fading in
+		this->fade += 0.005f;
+
+		if (this->fade > 1.0f)
+		{
+			this->fade = 1.0f;
 		}
+
+		if (this->fade >= 1.0f && !this->speechPlayed)
+		{
+			se::Play("speech");
+			this->speechPlayed = true; //speech only plays once
+		}
+
+		if (this->fade >= 1.0f)
+		{
+			//for text animation
+			if (this->time % 10 == 0)
+			{
+				this->textAnim++;
+			}
+
+			if (this->textAnim >= 12)
+			{
+				this->textAnim = 12;
+
+				if (inp.ST.down)
+				{
+					//自身に消滅要請
+					this->Kill();
+				}
+			}
+		}
+		//se::EndCheck();
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		ML::Box2D draw(50, 10, 160, 256);
-		ML::Box2D src(0, 0, 160, 256);
+		ML::Box2D drawCat(50, 10, 160, 256);
+		ML::Box2D srcCat(0, 0, 160, 256);
 
-		ML::Color col(fade, 1.0f, 1.0f, 1.0);
-		this->res->img->Draw(draw, src, col);
+		ML::Color col(this->fade, 1.f, 1.f, 1.f);
+		this->res->imgCat->Draw(drawCat, srcCat, col);
+
+		ML::Box2D drawText(220, 60, 215, 70);
+		ML::Box2D srcText(0, 70 * this->textAnim, 215, 70);
+		this->res->imgText->Draw(drawText, srcText);
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

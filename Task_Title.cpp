@@ -5,6 +5,7 @@
 #include  "Task_Title.h"
 #include  "Task_Game.h"
 #include  "Task_Instructions.h"
+#include  "sound.h"
 
 
 namespace  Title
@@ -14,7 +15,7 @@ namespace  Title
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->img = DG::Image::Create("./data/image/Title.bmp");
+		this->img = DG::Image::Create("./data/image/title.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -34,7 +35,7 @@ namespace  Title
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->logoPosY = -270;
+		this->fade = 0.f;
 
 		//★タスクの生成
 
@@ -45,9 +46,8 @@ namespace  Title
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
-
-
-		if (!ge->QuitFlag() && this->nextTaskCreate) {
+		if (!ge->QuitFlag() && this->nextTaskCreate) 
+		{
 			//★引き継ぎタスクの生成
 			auto  nextTask = Instructions::Object::Create(true);
 		}
@@ -60,13 +60,17 @@ namespace  Title
 	{
 		auto inp = ge->in1->GetState();
 
-		this->logoPosY += 9;
-		if (this->logoPosY >= 0) {
-			this->logoPosY = 0;
+		this->fade += 0.005f;
+		if (this->fade > 1.0f)
+		{
+			this->fade = 1.0f;
 		}
 
-		if (this->logoPosY == 0) {
-			if (inp.ST.down) {
+
+		if (this->fade >= 1.0f)
+		{
+			if (inp.ST.down)
+			{
 				//自身に消滅要請
 				this->Kill();
 			}
@@ -77,10 +81,10 @@ namespace  Title
 	void  Object::Render2D_AF()
 	{
 		ML::Box2D  draw(0, 0, 480, 270);
-		ML::Box2D  src(0, 0, 240, 135);
+		ML::Box2D  src(0, 0, 480, 270);
 
-		draw.Offset(0, this->logoPosY);
-		this->res->img->Draw(draw, src);
+		ML::Color col(this->fade, 1.0f, 1.0f, 1.0);
+		this->res->img->Draw(draw, src, col);
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
