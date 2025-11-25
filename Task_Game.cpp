@@ -32,12 +32,11 @@ namespace  Game
 
 		//★データ初期化
 		srand((unsigned int)time(NULL));
-		kill = false;
 
 		//★タスクの生成
 
-		//Object Initialize
-		auto obj = FaceParts::Object::Create(true);
+		//Face Parts Initialize
+		fp = FaceParts::Object::Create(true);
 
 		return  true;
 	}
@@ -48,9 +47,9 @@ namespace  Game
 		//★データ＆タスク解放
 		ge->KillAll_G("本編");
 		ge->KillAll_G("FaceParts");
-		kill = true;
 
-		if (!ge->QuitFlag() && this->nextTaskCreate) {
+		if (!ge->QuitFlag() && this->nextTaskCreate) 
+		{
 			//★引き継ぎタスクの生成
 			auto next = Ending::Object::Create(true);
 		}
@@ -63,7 +62,7 @@ namespace  Game
 	{
 		//if(obj->)
 		auto inp = ge->in1->GetState( );
-		if (inp.ST.down&&kill) 
+		if (inp.B1.down && fp->IsAllStopped())
 		{
 			//自身に消滅要請
 			this->Kill();

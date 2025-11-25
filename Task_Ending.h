@@ -4,6 +4,7 @@
 //エンディング
 //-------------------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
+#include "Task_FaceParts.h"
 
 namespace  Ending
 {
@@ -23,7 +24,10 @@ namespace  Ending
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-		DG::Image::SP  img;
+		DG::Image::SP	imgCat;
+		DG::Image::SP	imgFace;
+		DG::Image::SP	imgTextGood;
+		DG::Image::SP	imgTextBad;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -47,6 +51,12 @@ namespace  Ending
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		int			logoPosY;		//タイトル画像スクロール用カウンタ
+		float	fade;
+		int		time;
+		int		textAnim;
+
+		bool	speechPlayed;
+
+		FaceParts::Object::SP fp;
 	};
 }

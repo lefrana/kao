@@ -5,6 +5,10 @@
 #include  "Task_FaceParts.h"
 #include  "sound.h"
 
+#include  <iostream>
+
+FaceParts::Object::Score FaceParts::Object::score = { 0.f, false };
+
 namespace  FaceParts
 {
 	Resource::WP  Resource::instance;
@@ -39,18 +43,11 @@ namespace  FaceParts
 		this->controller = ge->in1;
 
 		se::LoadFile("click", "./data/sound/se/click.wav");
-		/*this->pos.x = 0;
-		this->pos.y = 0;
-
-		this->isMovingDown = true;
-		this->isStopping = false;*/
 
 		FacePart_Initialize(this->lefteye, 190);
 		FacePart_Initialize(this->righteye,260);
 		FacePart_Initialize(this->mouth, 240 - 32);
 		FacePart_Initialize(this->nose, 240 - 16);
-		
-
 
 		//šƒ^ƒXƒN‚Ì¶¬
 
@@ -97,6 +94,18 @@ namespace  FaceParts
 			{
 				FacePart_UpDate(this->mouth);
 			}
+
+
+			GetScore();
+
+			if (this->score.isGood)
+			{
+				std::cout << "good" << this->score.Totalpoints << std::endl;
+			}
+			else
+			{
+				std::cout << "bad" << this->score.Totalpoints << std::endl;
+			}
 		}
 	}
 	//-------------------------------------------------------------------
@@ -107,6 +116,24 @@ namespace  FaceParts
 		ML::Box2D	src(0, 0, 160, 256);
 		draw.Offset(this->logoPosX, 0);
 		this->res->imgBody->Draw(draw, src);
+
+		////left eye check
+		//draw=ML::Box2D(190, 140, 32,32);
+		//src=ML::Box2D(0, 0, 32, 32);
+		//this->res->img->Draw(draw, src);
+		////right eye check
+		//draw = ML::Box2D(260, 140, 32,32);
+		//src = ML::Box2D(0, 0, 32, 32);
+		//this->res->img->Draw(draw, src);
+		////mouth check
+		//draw = ML::Box2D(208, 180, 64, 32);
+		//src = ML::Box2D(64, 0, 64, 32);
+		//this->res->img->Draw(draw, src);
+		////nose check
+		//draw = ML::Box2D(224, 165, 32, 32);
+		//src = ML::Box2D(32, 0, 32, 32);
+		//this->res->img->Draw(draw, src);
+
 
 		FacePart_Draw(this->lefteye, 32 * 0, 32, 0);
 		FacePart_Draw(this->righteye, 32 * 0, 32, 0);
@@ -158,11 +185,23 @@ namespace  FaceParts
 			{
 				p_.state = State::Stop;
 				se::Play("click");
+				p_.newPosY = p_.pos.y;
 			}
 		}
 	}
 	//-------------------------------------------------------------------
-	bool Object::IsAllStopped()
+	void  Object::GetScore()
+	{
+		//calculate points based on sum of pos.y
+		this->score.Totalpoints = lefteye.newPosY + righteye.newPosY +
+			nose.newPosY + mouth.newPosY;
+
+		//mark as good if total is in range
+		score.isGood = (this->score.Totalpoints >= 585.f && this->score.Totalpoints <= 635.f);
+	}
+	//-------------------------------------------------------------------
+	//checking for ending flag
+	bool  Object::IsAllStopped()
 	{
 		return
 			this->lefteye.state		== State::Stop &&

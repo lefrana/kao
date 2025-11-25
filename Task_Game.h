@@ -4,6 +4,7 @@
 //ゲーム本編
 //-------------------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
+#include "Task_FaceParts.h"
 
 namespace  Game
 {
@@ -47,6 +48,6 @@ namespace  Game
 		//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		bool	kill;
+		FaceParts::Object::SP fp;
 	};
 }

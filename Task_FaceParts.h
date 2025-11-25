@@ -64,14 +64,27 @@ namespace  FaceParts
 			State			state;
 			ML::Point		pos;
 			bool			isMovingDown;
+			float			newPosY;
 		};
 
-		FacePart lefteye, righteye, nose, mouth;
+		FacePart	lefteye, righteye, nose, mouth;
+
+		struct Score
+		{
+			float			Totalpoints;
+			bool			isGood;
+		};
+
+		static Score score;
+
+		void  GetScore();
 
 		void  FacePart_Initialize(FacePart& p_, int x_);
 		void  FacePart_UpDate(FacePart& p_);
 		void  FacePart_Draw(FacePart& p_, int sx_, int sw_, int w_);
 
 		bool  IsAllStopped();
+
+
 	};
 }

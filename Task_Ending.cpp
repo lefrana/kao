@@ -4,6 +4,8 @@
 #include  "MyPG.h"
 #include  "Task_Ending.h"
 #include  "Task_Title.h"
+#include  "sound.h"
+#include  "Task_FaceParts.h"
 
 namespace  Ending
 {
@@ -12,14 +14,21 @@ namespace  Ending
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->img = DG::Image::Create("./data/image/Ending.bmp");
+		this->imgCat = DG::Image::Create("./data/image/kao_body.png");
+		this->imgTextGood = DG::Image::Create("./data/image/good_text.png");
+		this->imgTextBad = DG::Image::Create("./data/image/bad_text.png");
+		this->imgFace = DG::Image::Create("./data/image/kao_faceparts.png");
+
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
-		this->img.reset();
+		this->imgCat.reset();
+		this->imgFace.reset();
+		this->imgTextGood.reset();
+		this->imgTextBad.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -32,9 +41,24 @@ namespace  Ending
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->logoPosY = 270;
+		this->fade = 0.f;
+		this->time = 0;
+		this->textAnim = 0;
+
+		se::LoadFile("goodending", "./data/sound/se/goodending.wav");
+		se::LoadFile("badending", "./data/sound/se/badending.wav");
+		this->speechPlayed = false;
+
+
 
 		//★タスクの生成
+		fp = FaceParts::Object::Create(false);
+
+
+		//fp->FacePart_UpDate(fp->lefteye);
+		//fp->FacePart_UpDate(fp->righteye);
+		//fp->FacePart_UpDate(fp->nose);
+		//fp->FacePart_UpDate(fp->mouth);
 
 		return  true;
 	}
@@ -58,15 +82,63 @@ namespace  Ending
 	{
 		auto inp = ge->in1->GetState();
 
-		this->logoPosY -= 9;
-		if (this->logoPosY <= 0) {
-			this->logoPosY = 0;
+		this->time++;
+
+		//cat fading in
+		this->fade += 0.005f;
+
+		if (this->fade > 1.0f)
+		{
+			this->fade = 1.0f;
 		}
 
-		if (this->logoPosY == 0) {
-			if (inp.ST.down) {
-				//自身に消滅要請
-				this->Kill();
+		if (this->fade >= 1.0f && !this->speechPlayed)
+		{
+			if (FaceParts::Object::score.isGood)
+			{
+				se::Play("goodending");
+			}
+			else
+			{
+				se::Play("badending");
+			}
+			this->speechPlayed = true; //speech only plays once
+		}
+
+		if (this->fade >= 1.0f)
+		{
+			//for text animation
+			if (this->time % 10 == 0)
+			{
+				this->textAnim++;
+			}
+
+			if (FaceParts::Object::score.isGood)
+			{
+				if (this->textAnim >= 9)
+				{
+					this->textAnim = 9; //good ending
+
+					if (inp.ST.down)
+					{
+						//自身に消滅要請
+						this->Kill();
+					}
+				}
+			}
+
+			else
+			{
+				if (this->textAnim >= 7)
+				{
+					this->textAnim = 7; //good ending
+
+					if (inp.ST.down)
+					{
+						//自身に消滅要請
+						this->Kill();
+					}
+				}
 			}
 		}
 	}
@@ -74,11 +146,46 @@ namespace  Ending
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		ML::Box2D  draw(0, 0, 480, 270);
-		ML::Box2D  src(0, 0, 240, 135);
+		ML::Box2D drawCat(50, 10, 160, 256);
+		ML::Box2D srcCat(0, 0, 160, 256);
 
-		draw.Offset(0, this->logoPosY);
-		this->res->img->Draw(draw, src);
+		ML::Color col(this->fade, 1.f, 1.f, 1.f);
+		this->res->imgCat->Draw(drawCat, srcCat, col);
+
+		{
+			//draw left eye
+			ML::Box2D drawFace(fp->lefteye.pos.x - 110, fp->lefteye.newPosY - 57, 32, 32);
+			ML::Box2D srcFace(0, 0, 32, 32);
+			this->res->imgFace->Draw(drawFace, srcFace, col);
+
+			//right eye
+			drawFace = ML::Box2D(fp->righteye.pos.x - 110, fp->righteye.newPosY - 57, 32, 32);
+			this->res->imgFace->Draw(drawFace, srcFace, col);
+
+			//nose
+			drawFace = ML::Box2D(fp->nose.pos.x - 110, fp->nose.newPosY - 57, 32, 32);
+			srcFace.x += 32;
+			this->res->imgFace->Draw(drawFace, srcFace, col);
+
+			//mouth
+			drawFace = ML::Box2D(fp->mouth.pos.x - 110, fp->mouth.newPosY - 57, 64, 32);
+			srcFace.x += 32;
+			srcFace.w += 32;
+			this->res->imgFace->Draw(drawFace, srcFace, col);
+		}
+
+		if (FaceParts::Object::score.isGood)
+		{
+			ML::Box2D drawText(220, 60, 135, 60);
+			ML::Box2D srcText(0, 60 * this->textAnim, 135, 60);
+			this->res->imgTextGood->Draw(drawText, srcText);
+		}
+		else
+		{
+			ML::Box2D drawText(220, 30, 150, 30);
+			ML::Box2D srcText(0, 30 * this->textAnim, 150, 30);
+			this->res->imgTextBad->Draw(drawText, srcText);
+		}
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
