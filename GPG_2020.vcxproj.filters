@@ -94,6 +94,12 @@
     <ClCompile Include="sound.cpp">
       <Filter>MyPG\Task</Filter>
     </ClCompile>
+    <ClCompile Include="Task_FPp1.cpp">
+      <Filter>MyPG\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_FPp2.cpp">
+      <Filter>MyPG\Task</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -160,6 +166,12 @@
       <Filter>MyPG\Task</Filter>
     </ClInclude>
     <ClInclude Include="sound.h">
+      <Filter>MyPG\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_FPp1.h">
+      <Filter>MyPG\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_FPp2.h">
       <Filter>MyPG\Task</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,15 +1,14 @@
 #pragma warning(disable:4996)
 #pragma once
 //-------------------------------------------------------------------
-//エンディング
+//Face Parts Player 2
 //-------------------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
-#include "Task_FaceParts.h"
 
-namespace  Ending
+namespace  Player2
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("エンディング");	//グループ名
+	const  string  defGroupName("Player2");	//グループ名
 	const  string  defName("NoName");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
@@ -24,11 +23,8 @@ namespace  Ending
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-		DG::Image::SP	imgCat;
-		DG::Image::SP	imgFace;
-		DG::Image::SP	imgTextGood;
-		DG::Image::SP	imgTextBad;
-		DG::Image::SP	imgEnd;
+		DG::Image::SP	img;
+		DG::Image::SP	imgBody;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -52,24 +48,43 @@ namespace  Ending
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		float	fadeCat;
-		float	fadeEnd;
-		int		time;
-		int		textAnim;
+		//ML::Point		pos;
+		//ML::Box2D		hitBase;
+		int				transPosX;
 
-		bool	speechPlayed;
+		XI::GamePad::SP	controller;
 
-		//FaceParts::Object::SP fp;
-		FaceParts::Object::Score score;
+		//bool	isMovingDown;
+		//bool	isStopping;
 
-		struct FacePartsData
+		enum class State { Normal, Move, Stop };
+
+		struct FacePart 
 		{
-			float lefteyeY;
-			float righteyeY;
-			float noseY;
-			float mouthY;
+			State			state;
+			ML::Point		pos;
+			bool			isMovingDown;
+			float			newPosY;
 		};
 
-		FacePartsData fpData;
+		FacePart	lefteye, righteye, nose, mouth;
+
+		struct Score
+		{
+			float			Totalpoints;
+			bool			isGood;
+		};
+
+		Score score;
+
+		void  GetScore();
+
+		void  FacePart_Initialize(FacePart& p_, int x_);
+		void  FacePart_UpDate(FacePart& p_);
+		void  FacePart_Draw(FacePart& p_, int sx_, int sw_, int w_);
+
+		bool  IsAllStopped();
+
+
 	};
 }

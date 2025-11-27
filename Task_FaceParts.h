@@ -50,7 +50,7 @@ namespace  FaceParts
 		//追加したい変数・メソッドはここに追加する
 		//ML::Point		pos;
 		//ML::Box2D		hitBase;
-		int				logoPosX;
+		int				transPosX;
 
 		XI::GamePad::SP	controller;
 
@@ -75,7 +75,7 @@ namespace  FaceParts
 			bool			isGood;
 		};
 
-		static Score score;
+		Score score;
 
 		void  GetScore();
 

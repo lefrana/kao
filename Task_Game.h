@@ -4,7 +4,10 @@
 //ゲーム本編
 //-------------------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
-#include "Task_FaceParts.h"
+
+#include  "Task_FaceParts.h"
+#include  "Task_FPp1.h"
+#include  "Task_FPp2.h"
 
 namespace  Game
 {
@@ -49,5 +52,10 @@ namespace  Game
 	public:
 		//追加したい変数・メソッドはここに追加する
 		FaceParts::Object::SP fp;
+
+		Player1::Object::SP p1;
+		Player2::Object::SP p2;
+
+		int playerCount;
 	};
 }

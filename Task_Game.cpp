@@ -4,7 +4,6 @@
 #include  "MyPG.h"
 #include  "Task_Game.h"
 #include  "Task_Ending.h"
-#include  "Task_FaceParts.h"
 
 namespace  Game
 {
@@ -36,7 +35,17 @@ namespace  Game
 		//★タスクの生成
 
 		//Face Parts Initialize
-		fp = FaceParts::Object::Create(true);
+		if (this->playerCount == 1)
+		{
+			fp = FaceParts::Object::Create(true);
+		}
+
+		else
+		{
+			p1 = Player1::Object::Create(true);
+			p2 = Player2::Object::Create(true);
+			//fp = nullptr;
+		}
 
 		return  true;
 	}
@@ -52,6 +61,12 @@ namespace  Game
 		{
 			//★引き継ぎタスクの生成
 			auto next = Ending::Object::Create(true);
+			next->score = fp->score;
+
+			next->fpData.lefteyeY = fp->lefteye.newPosY;
+			next->fpData.righteyeY = fp->righteye.newPosY;
+			next->fpData.noseY = fp->nose.newPosY;
+			next->fpData.mouthY = fp->mouth.newPosY;
 		}
 
 		return  true;
@@ -62,10 +77,20 @@ namespace  Game
 	{
 		//if(obj->)
 		auto inp = ge->in1->GetState( );
-		if (inp.B1.down && fp->IsAllStopped())
+
+		if (playerCount == 1)
 		{
-			//自身に消滅要請
-			this->Kill();
+			if (fp && inp.B1.down && fp->IsAllStopped())
+			{
+				this->Kill();
+			}
+		}
+		else if (playerCount == 2)
+		{
+			if (inp.B1.down)
+			{
+				this->Kill();
+			}
 		}
 	}
 	//-------------------------------------------------------------------

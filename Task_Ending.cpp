@@ -18,6 +18,7 @@ namespace  Ending
 		this->imgTextGood = DG::Image::Create("./data/image/good_text.png");
 		this->imgTextBad = DG::Image::Create("./data/image/bad_text.png");
 		this->imgFace = DG::Image::Create("./data/image/kao_faceparts.png");
+		this->imgEnd = DG::Image::Create("./data/image/fin.png");
 
 		return true;
 	}
@@ -29,6 +30,8 @@ namespace  Ending
 		this->imgFace.reset();
 		this->imgTextGood.reset();
 		this->imgTextBad.reset();
+		this->imgEnd.reset();
+
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -41,7 +44,8 @@ namespace  Ending
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->fade = 0.f;
+		this->fadeCat = 0.f;
+		this->fadeEnd = 0.f;
 		this->time = 0;
 		this->textAnim = 0;
 
@@ -52,8 +56,6 @@ namespace  Ending
 
 
 		//★タスクの生成
-		fp = FaceParts::Object::Create(false);
-
 
 		//fp->FacePart_UpDate(fp->lefteye);
 		//fp->FacePart_UpDate(fp->righteye);
@@ -67,6 +69,8 @@ namespace  Ending
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
+		se::Stop("badending");
+		se::Stop("goodending");
 
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
@@ -85,16 +89,16 @@ namespace  Ending
 		this->time++;
 
 		//cat fading in
-		this->fade += 0.005f;
+		this->fadeCat += 0.005f;
 
-		if (this->fade > 1.0f)
+		if (this->fadeCat > 1.0f)
 		{
-			this->fade = 1.0f;
+			this->fadeCat = 1.0f;
 		}
 
-		if (this->fade >= 1.0f && !this->speechPlayed)
+		if (this->fadeCat >= 1.0f && !this->speechPlayed)
 		{
-			if (FaceParts::Object::score.isGood)
+			if (this->score.isGood)
 			{
 				se::Play("goodending");
 			}
@@ -105,7 +109,7 @@ namespace  Ending
 			this->speechPlayed = true; //speech only plays once
 		}
 
-		if (this->fade >= 1.0f)
+		if (this->fadeCat >= 1.0f)
 		{
 			//for text animation
 			if (this->time % 10 == 0)
@@ -113,16 +117,23 @@ namespace  Ending
 				this->textAnim++;
 			}
 
-			if (FaceParts::Object::score.isGood)
+			if (this->score.isGood)
 			{
 				if (this->textAnim >= 9)
 				{
 					this->textAnim = 9; //good ending
 
-					if (inp.ST.down)
+					this->fadeEnd += 0.003f;
+
+					if (this->fadeEnd > 1.0f)
 					{
-						//自身に消滅要請
-						this->Kill();
+						this->fadeEnd = 1.0f;
+
+						if (inp.ST.down)
+						{
+							//自身に消滅要請
+							this->Kill();
+						}
 					}
 				}
 			}
@@ -133,10 +144,17 @@ namespace  Ending
 				{
 					this->textAnim = 7; //good ending
 
-					if (inp.ST.down)
+					this->fadeEnd += 0.003f;
+
+					if (this->fadeEnd > 1.0f)
 					{
-						//自身に消滅要請
-						this->Kill();
+						this->fadeEnd = 1.0f;
+
+						if (inp.B1.down)
+						{
+							//自身に消滅要請
+							this->Kill();
+						}
 					}
 				}
 			}
@@ -148,33 +166,33 @@ namespace  Ending
 	{
 		ML::Box2D drawCat(50, 10, 160, 256);
 		ML::Box2D srcCat(0, 0, 160, 256);
-
-		ML::Color col(this->fade, 1.f, 1.f, 1.f);
-		this->res->imgCat->Draw(drawCat, srcCat, col);
+		ML::Color colCat(this->fadeCat, 1.f, 1.f, 1.f);
+		this->res->imgCat->Draw(drawCat, srcCat, colCat);
 
 		{
 			//draw left eye
-			ML::Box2D drawFace(fp->lefteye.pos.x - 110, fp->lefteye.newPosY - 57, 32, 32);
+			ML::Box2D drawFace(190 - 110, this->fpData.lefteyeY - 57, 32, 32);
 			ML::Box2D srcFace(0, 0, 32, 32);
-			this->res->imgFace->Draw(drawFace, srcFace, col);
+			this->res->imgFace->Draw(drawFace, srcFace, colCat);
 
 			//right eye
-			drawFace = ML::Box2D(fp->righteye.pos.x - 110, fp->righteye.newPosY - 57, 32, 32);
-			this->res->imgFace->Draw(drawFace, srcFace, col);
-
-			//nose
-			drawFace = ML::Box2D(fp->nose.pos.x - 110, fp->nose.newPosY - 57, 32, 32);
-			srcFace.x += 32;
-			this->res->imgFace->Draw(drawFace, srcFace, col);
+			drawFace = ML::Box2D(260 - 110, this->fpData.righteyeY - 57, 32, 32);
+			this->res->imgFace->Draw(drawFace, srcFace, colCat);
 
 			//mouth
-			drawFace = ML::Box2D(fp->mouth.pos.x - 110, fp->mouth.newPosY - 57, 64, 32);
-			srcFace.x += 32;
+			drawFace = ML::Box2D(240 - 32 - 110, this->fpData.mouthY - 57, 64, 32);
+			srcFace.x += 64;
 			srcFace.w += 32;
-			this->res->imgFace->Draw(drawFace, srcFace, col);
+			this->res->imgFace->Draw(drawFace, srcFace, colCat);
+
+			//nose
+			drawFace = ML::Box2D(240 - 16 - 110, this->fpData.noseY - 57, 32, 32);
+			srcFace.x -= 32;
+			srcFace.w -= 32;
+			this->res->imgFace->Draw(drawFace, srcFace, colCat);
 		}
 
-		if (FaceParts::Object::score.isGood)
+		if (this->score.isGood)
 		{
 			ML::Box2D drawText(220, 60, 135, 60);
 			ML::Box2D srcText(0, 60 * this->textAnim, 135, 60);
@@ -182,10 +200,15 @@ namespace  Ending
 		}
 		else
 		{
-			ML::Box2D drawText(220, 30, 150, 30);
+			ML::Box2D drawText(220, 60, 150, 30);
 			ML::Box2D srcText(0, 30 * this->textAnim, 150, 30);
 			this->res->imgTextBad->Draw(drawText, srcText);
 		}
+
+		ML::Box2D drawEnd(345, 202, 110, 60);
+		ML::Box2D srcEnd(0, 0, 110, 60);
+		ML::Color colEnd(this->fadeEnd, 1.f, 1.f, 1.f);
+		this->res->imgEnd->Draw(drawEnd, srcEnd, colEnd);
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

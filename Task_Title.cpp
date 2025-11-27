@@ -36,6 +36,7 @@ namespace  Title
 
 		//★データ初期化
 		this->fade = 0.f;
+		this->playerCount = 1;
 
 		//★タスクの生成
 
@@ -50,6 +51,7 @@ namespace  Title
 		{
 			//★引き継ぎタスクの生成
 			auto  nextTask = Instructions::Object::Create(true);
+			nextTask->playerCount = this->playerCount;
 		}
 
 		return  true;
@@ -69,12 +71,19 @@ namespace  Title
 
 		if (this->fade >= 1.0f)
 		{
-			if (inp.ST.down)
+			if (inp.B1.down)
 			{
-				//自身に消滅要請
+				this->playerCount = 1;
+				this->Kill();
+			}
+
+			else if (inp.B2.down)
+			{
+				this->playerCount = 2;
 				this->Kill();
 			}
 		}
+
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理

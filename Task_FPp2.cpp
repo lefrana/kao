@@ -2,14 +2,13 @@
 //Face Parts
 //-------------------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_FaceParts.h"
 #include  "sound.h"
+#include  "Task_FPp2.h"
 
 #include  <iostream>
 
-//FaceParts::Object::Score FaceParts::Object::score = { 0.f, false };
 
-namespace  FaceParts
+namespace  Player2
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
@@ -47,10 +46,10 @@ namespace  FaceParts
 
 		se::LoadFile("click", "./data/sound/se/click.wav");
 
-		FacePart_Initialize(this->lefteye, 190);
-		FacePart_Initialize(this->righteye,260);
-		FacePart_Initialize(this->mouth, 240 - 32);
-		FacePart_Initialize(this->nose, 240 - 16);
+		FacePart_Initialize(this->lefteye, 190+120);
+		FacePart_Initialize(this->righteye,260+120);
+		FacePart_Initialize(this->mouth, 240 - 32+120);
+		FacePart_Initialize(this->nose, 240 - 16+120);
 
 		//šƒ^ƒXƒN‚Ì¶¬
 
@@ -116,28 +115,11 @@ namespace  FaceParts
 	//u‚Q‚c•`‰æv‚PƒtƒŒ[ƒ€–ˆ‚És‚¤ˆ—
 	void  Object::Render2D_AF()
 	{
-		ML::Box2D	draw(480/3, 270/4, 160, 256);
+		ML::Box2D	draw(480/3+120, 270/4, 160, 256);
 		ML::Box2D	src(0, 0, 160, 256);
+		ML::Color	col(1.f, 1.f, .7f, .3f);
 		draw.Offset(this->transPosX, 0);
-		this->res->imgBody->Draw(draw, src);
-
-		////left eye check
-		//draw=ML::Box2D(190, 140, 32,32);
-		//src=ML::Box2D(0, 0, 32, 32);
-		//this->res->img->Draw(draw, src);
-		////right eye check
-		//draw = ML::Box2D(260, 140, 32,32);
-		//src = ML::Box2D(0, 0, 32, 32);
-		//this->res->img->Draw(draw, src);
-		////mouth check
-		//draw = ML::Box2D(208, 180, 64, 32);
-		//src = ML::Box2D(64, 0, 64, 32);
-		//this->res->img->Draw(draw, src);
-		////nose check
-		//draw = ML::Box2D(224, 165, 32, 32);
-		//src = ML::Box2D(32, 0, 32, 32);
-		//this->res->img->Draw(draw, src);
-
+		this->res->imgBody->Draw(draw, src, col);
 
 		FacePart_Draw(this->lefteye, 32 * 0, 32, 0);
 		FacePart_Draw(this->righteye, 32 * 0, 32, 0);

@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------
-//Istructions
+//Instructions
 //-------------------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_Instructions.h"
@@ -42,6 +42,8 @@ namespace  Instructions
 		this->time = 0;
 		this->textAnim = 0;
 
+
+
 		se::LoadFile("speech", "./data/sound/se/speech.wav");
 		this->speechPlayed = false;
 	
@@ -54,12 +56,14 @@ namespace  Instructions
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
+		se::Stop("speech");
 
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) 
 		{
 			//★引き継ぎタスクの生成
 			auto  nextTask = Game::Object::Create(true);
+			nextTask->playerCount = this->playerCount;
 		}
 
 		return  true;
@@ -98,9 +102,8 @@ namespace  Instructions
 			{
 				this->textAnim = 12;
 
-				if (inp.ST.down)
+				if (inp.B1.down)
 				{
-					//自身に消滅要請
 					this->Kill();
 				}
 			}

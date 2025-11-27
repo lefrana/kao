@@ -53,5 +53,7 @@ namespace  Instructions
 		int		textAnim;
 
 		bool	speechPlayed;
+
+		int		playerCount;
 	};
 }
