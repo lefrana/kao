@@ -78,5 +78,6 @@ namespace  MyPG
 	};
 }
 extern MyPG::MyGameEngine* ge;
+extern int g_playerCount;
 
 

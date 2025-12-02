@@ -31,20 +31,18 @@ namespace  Game
 
 		//★データ初期化
 		srand((unsigned int)time(NULL));
+		this->isP1Over = false;
 
 		//★タスクの生成
 
 		//Face Parts Initialize
-		if (this->playerCount == 1)
+		if (g_playerCount == 1)
 		{
 			fp = FaceParts::Object::Create(true);
 		}
-
 		else
 		{
 			p1 = Player1::Object::Create(true);
-			p2 = Player2::Object::Create(true);
-			//fp = nullptr;
 		}
 
 		return  true;
@@ -56,19 +54,47 @@ namespace  Game
 		//★データ＆タスク解放
 		ge->KillAll_G("本編");
 		ge->KillAll_G("FaceParts");
+		ge->KillAll_G("Player1");
+		ge->KillAll_G("Player2");
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) 
 		{
 			//★引き継ぎタスクの生成
 			auto next = Ending::Object::Create(true);
-			next->score = fp->score;
 
-			next->fpData.lefteyeY = fp->lefteye.newPosY;
-			next->fpData.righteyeY = fp->righteye.newPosY;
-			next->fpData.noseY = fp->nose.newPosY;
-			next->fpData.mouthY = fp->mouth.newPosY;
+			if (g_playerCount == 1)
+			{
+				next->score = fp->score;
+
+				next->fpData.lefteyeY = fp->lefteye.newPosY;
+				next->fpData.righteyeY = fp->righteye.newPosY;
+				next->fpData.noseY = fp->nose.newPosY;
+				next->fpData.mouthY = fp->mouth.newPosY;
+			}
+
+			else
+			{
+				next->scoreP1 = p1->score;
+				next->scoreP2 = p2->score;
+
+				if (p1->score.Totalpoints >= p2->score.Totalpoints)
+				{
+					next->fpData.lefteyeY	= p1->lefteye.newPosY;
+					next->fpData.righteyeY	= p1->righteye.newPosY;
+					next->fpData.noseY		= p1->nose.newPosY;
+					next->fpData.mouthY		= p1->mouth.newPosY;
+					next->winner = 1;
+				}
+				else
+				{
+					next->fpData.lefteyeY	= p2->lefteye.newPosY;
+					next->fpData.righteyeY	= p2->righteye.newPosY;
+					next->fpData.noseY		= p2->nose.newPosY;
+					next->fpData.mouthY		= p2->mouth.newPosY;
+					next->winner = 2;
+				}
+			}
 		}
-
 		return  true;
 	}
 	//-------------------------------------------------------------------
@@ -78,18 +104,37 @@ namespace  Game
 		//if(obj->)
 		auto inp = ge->in1->GetState( );
 
-		if (playerCount == 1)
+		if (g_playerCount == 1)
 		{
 			if (fp && inp.B1.down && fp->IsAllStopped())
 			{
 				this->Kill();
 			}
 		}
-		else if (playerCount == 2)
+		/*else
 		{
-			if (inp.B1.down)
+			if (inp.B2.down)
 			{
 				this->Kill();
+			}
+		}*/
+
+		else if (g_playerCount == 2)
+		{
+			if (!isP1Over)
+			{
+				if (p1 && inp.B2.down && p1->IsAllStopped())
+				{
+					isP1Over = true;
+					p2 = Player2::Object::Create(true);
+				}
+			}
+			else
+			{
+				if (p2 && inp.B2.down && p2->IsAllStopped())
+				{
+					this->Kill();
+				}
 			}
 		}
 	}

@@ -3,10 +3,10 @@
 //-------------------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_Title.h"
-#include  "Task_Game.h"
 #include  "Task_Instructions.h"
 #include  "sound.h"
 
+int g_playerCount = 1;
 
 namespace  Title
 {
@@ -36,7 +36,7 @@ namespace  Title
 
 		//★データ初期化
 		this->fade = 0.f;
-		this->playerCount = 1;
+		//g_playerCount = 1;
 
 		//★タスクの生成
 
@@ -51,7 +51,6 @@ namespace  Title
 		{
 			//★引き継ぎタスクの生成
 			auto  nextTask = Instructions::Object::Create(true);
-			nextTask->playerCount = this->playerCount;
 		}
 
 		return  true;
@@ -73,13 +72,13 @@ namespace  Title
 		{
 			if (inp.B1.down)
 			{
-				this->playerCount = 1;
+				g_playerCount = 1;
 				this->Kill();
 			}
 
 			else if (inp.B2.down)
 			{
-				this->playerCount = 2;
+				g_playerCount = 2;
 				this->Kill();
 			}
 		}

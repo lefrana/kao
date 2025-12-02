@@ -8,6 +8,7 @@
 #include  "Task_FaceParts.h"
 #include  "Task_FPp1.h"
 #include  "Task_FPp2.h"
+#include  "Task_Title.h"
 
 namespace  Game
 {
@@ -51,11 +52,14 @@ namespace  Game
 		//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		FaceParts::Object::SP fp;
+		FaceParts::Object::SP	fp;
 
-		Player1::Object::SP p1;
-		Player2::Object::SP p2;
+		Player1::Object::SP		p1;
+		Player2::Object::SP		p2;
 
-		int playerCount;
+		Title::Object::SP		pc;
+
+
+		bool	isP1Over;
 	};
 }

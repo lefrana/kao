@@ -57,11 +57,6 @@ namespace  Ending
 
 		//★タスクの生成
 
-		//fp->FacePart_UpDate(fp->lefteye);
-		//fp->FacePart_UpDate(fp->righteye);
-		//fp->FacePart_UpDate(fp->nose);
-		//fp->FacePart_UpDate(fp->mouth);
-
 		return  true;
 	}
 	//-------------------------------------------------------------------
@@ -98,15 +93,22 @@ namespace  Ending
 
 		if (this->fadeCat >= 1.0f && !this->speechPlayed)
 		{
-			if (this->score.isGood)
+			if (g_playerCount == 1)
 			{
-				se::Play("goodending");
+				if (this->score.isGood)
+				{
+					se::Play("goodending");
+				}
+				else
+				{
+					se::Play("badending");
+				}
 			}
 			else
 			{
-				se::Play("badending");
+				se::Play("goodending");
 			}
-			this->speechPlayed = true; //speech only plays once
+			this->speechPlayed = true;
 		}
 
 		if (this->fadeCat >= 1.0f)
@@ -117,7 +119,7 @@ namespace  Ending
 				this->textAnim++;
 			}
 
-			if (this->score.isGood)
+			if (g_playerCount == 1 && this->score.isGood || g_playerCount == 2)
 			{
 				if (this->textAnim >= 9)
 				{
@@ -129,20 +131,19 @@ namespace  Ending
 					{
 						this->fadeEnd = 1.0f;
 
-						if (inp.ST.down)
+						if (inp.B1.down || inp.B2.down)
 						{
-							//自身に消滅要請
 							this->Kill();
 						}
 					}
 				}
 			}
 
-			else
+			else if (g_playerCount == 1 && !this->score.isGood)
 			{
-				if (this->textAnim >= 7)
+				if (this->textAnim >= 7) //bad ending p1
 				{
-					this->textAnim = 7; //good ending
+					this->textAnim = 7;
 
 					this->fadeEnd += 0.003f;
 
@@ -152,7 +153,6 @@ namespace  Ending
 
 						if (inp.B1.down)
 						{
-							//自身に消滅要請
 							this->Kill();
 						}
 					}
@@ -166,7 +166,23 @@ namespace  Ending
 	{
 		ML::Box2D drawCat(50, 10, 160, 256);
 		ML::Box2D srcCat(0, 0, 160, 256);
-		ML::Color colCat(this->fadeCat, 1.f, 1.f, 1.f);
+		ML::Color colCat;
+		if (g_playerCount == 1)
+		{
+			colCat = ML::Color(this->fadeCat, 1.f, 1.f, 1.f);
+		}
+		else
+		{
+			if (this->winner == 1)
+			{
+				colCat = ML::Color(this->fadeCat, 1.f, .7f, .9f);
+			}
+			else
+			{
+				colCat = ML::Color(this->fadeCat, 1.f, .7f, .3f);
+			}
+		}
+
 		this->res->imgCat->Draw(drawCat, srcCat, colCat);
 
 		{
@@ -192,13 +208,14 @@ namespace  Ending
 			this->res->imgFace->Draw(drawFace, srcFace, colCat);
 		}
 
-		if (this->score.isGood)
+		if (g_playerCount == 1 && this->score.isGood || g_playerCount == 2) //good ending n p2
 		{
 			ML::Box2D drawText(220, 60, 135, 60);
 			ML::Box2D srcText(0, 60 * this->textAnim, 135, 60);
 			this->res->imgTextGood->Draw(drawText, srcText);
 		}
-		else
+
+		else if (g_playerCount == 1 && !this->score.isGood) //bad ending for p1
 		{
 			ML::Box2D drawText(220, 60, 150, 30);
 			ML::Box2D srcText(0, 30 * this->textAnim, 150, 30);

@@ -167,7 +167,7 @@ namespace  Player2
 		if (this->controller)
 		{
 			auto inp = this->controller->GetState();
-			if (inp.B1.down)
+			if (inp.B2.down)
 			{
 				p_.state = State::Stop;
 				se::Play("click");

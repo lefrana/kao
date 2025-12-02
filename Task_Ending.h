@@ -5,6 +5,8 @@
 //-------------------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
 #include "Task_FaceParts.h"
+#include "Task_FPp1.h"
+#include "Task_FPp2.h"
 
 namespace  Ending
 {
@@ -59,8 +61,9 @@ namespace  Ending
 
 		bool	speechPlayed;
 
-		//FaceParts::Object::SP fp;
-		FaceParts::Object::Score score;
+		FaceParts::Object::Score	score;
+		Player1::Object::Score		scoreP1;
+		Player2::Object::Score		scoreP2;
 
 		struct FacePartsData
 		{
@@ -71,5 +74,7 @@ namespace  Ending
 		};
 
 		FacePartsData fpData;
+
+		int winner;
 	};
 }

@@ -63,7 +63,6 @@ namespace  Instructions
 		{
 			//šˆø‚«Œp‚¬ƒ^ƒXƒN‚Ì¶¬
 			auto  nextTask = Game::Object::Create(true);
-			nextTask->playerCount = this->playerCount;
 		}
 
 		return  true;
@@ -102,8 +101,9 @@ namespace  Instructions
 			{
 				this->textAnim = 12;
 
-				if (inp.B1.down)
+				if (inp.B1.down || inp.B2.down)
 				{
+					this->nextTaskCreate = true;
 					this->Kill();
 				}
 			}
